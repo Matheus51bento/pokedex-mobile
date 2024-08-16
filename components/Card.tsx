@@ -5,8 +5,16 @@ import TypeCard from '../components/TypeCard';
 
 const Snorlax = require('../assets/snorlax.png');
 const Pokebola = require('../assets/pokebola.png');
+interface CardProps {
+  name: string;
+  hp: string;
+  attack: string;
+  defense: string;
+  speed: string;
+  type: string;
+}
 
-export default function Card() {
+export default function Card({ name, hp, attack, defense, speed, type }: CardProps) {
   return (
       <View style={styles.card}>
         <View style={{ marginVertical: 'auto' }}>
@@ -16,12 +24,12 @@ export default function Card() {
           />
         </View>
         <View style={styles.card_column}>
-          <Text style={styles.card_title}>Snorlax</Text>
-          <CardText title="HP" content="105" />
-          <CardText title="ATTACK" content="+8000" />
-          <CardText title="DEFENSE" content="105" />
-          <CardText title="SPEED" content="105" />
-          <TypeCard color="#f40" content="Normal" />
+          <Text style={styles.card_title}>{name}</Text>
+          <CardText title="HP" content={hp} />
+          <CardText title="ATTACK" content={attack} />
+          <CardText title="DEFENSE" content={defense} />
+          <CardText title="SPEED" content={speed} />
+          <TypeCard color="#f40" content={type} />
         </View>
         <View style={styles.card_column}>
           <View style={styles.pokenumber}>
@@ -44,6 +52,8 @@ const styles = StyleSheet.create({
     gap: 5,
     backgroundColor: 'white',
     width: '90%',
+    marginHorizontal: 'auto',
+    marginVertical: 10,
     height: 180,
     borderRadius: 10,
     shadowColor: '#000',
