@@ -1,12 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageSourcePropType } from 'react-native';
 import CardText from '../components/CardText';
 import TypeCard from '../components/TypeCard';
 
-const Snorlax = require('../assets/snorlax.png');
 const Pokebola = require('../assets/pokebola.png');
+
 interface CardProps {
   name: string;
+  image: ImageSourcePropType;
   hp: string;
   attack: string;
   defense: string;
@@ -14,13 +14,13 @@ interface CardProps {
   type: string;
 }
 
-export default function Card({ name, hp, attack, defense, speed, type }: CardProps) {
+export default function Card({ name, image, hp, attack, defense, speed, type }: CardProps) {
   return (
       <View style={styles.card}>
         <View style={{ marginVertical: 'auto' }}>
           <Image
             style={{ width: 160, height: 160, borderRadius: 50 }}
-            source={Snorlax}
+            source={image}
           />
         </View>
         <View style={styles.card_column}>
