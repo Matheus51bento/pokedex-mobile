@@ -1,10 +1,16 @@
-import { StyleSheet, Text, View, Image, ImageSourcePropType } from 'react-native';
-import CardText from '../components/CardText';
-import TypeCard from '../components/TypeCard';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ImageSourcePropType,
+} from "react-native";
+import CardText from "../components/CardText";
+import TypeCard from "../components/TypeCard";
 
-const Pokebola = require('../assets/pokebola.png');
+const Pokebola = require("../assets/pokebola.png");
 
-interface CardProps {
+interface Card {
   name: string;
   image: ImageSourcePropType;
   hp: string;
@@ -14,49 +20,54 @@ interface CardProps {
   type: string;
 }
 
-export default function Card({ name, image, hp, attack, defense, speed, type }: CardProps) {
+interface Props {
+  card: Card;
+}
+
+export default function Card({ card }: Props) {
   return (
-      <View style={styles.card}>
-        <View style={{ marginVertical: 'auto' }}>
-          <Image
-            style={{ width: 160, height: 160, borderRadius: 50 }}
-            source={image}
-          />
-        </View>
-        <View style={styles.card_column}>
-          <Text style={styles.card_title}>{name}</Text>
-          <CardText title="HP" content={hp} />
-          <CardText title="ATTACK" content={attack} />
-          <CardText title="DEFENSE" content={defense} />
-          <CardText title="SPEED" content={speed} />
-          <TypeCard color="#f40" content={type} />
-        </View>
-        <View style={styles.card_column}>
-          <View style={styles.pokenumber}>
-            <Text style={{ textAlign: 'center', color: '#bab', fontWeight: 'bold' }}>N° 001</Text>
-          </View>
-        </View>
+    <View style={styles.card}>
+      <View style={{ marginVertical: "auto" }}>
         <Image
-          style={styles.backgroundImage}
-          source={Pokebola}
+          style={{ width: 160, height: 160, borderRadius: 50 }}
+          source={card.image}
         />
       </View>
+      <View style={styles.card_column}>
+        <Text style={styles.card_title}>{card.name}</Text>
+        <CardText title="HP" content={card.hp} />
+        <CardText title="ATTACK" content={card.attack} />
+        <CardText title="DEFENSE" content={card.defense} />
+        <CardText title="SPEED" content={card.speed} />
+        <TypeCard color="#f40" content={card.type} />
+      </View>
+      <View style={styles.card_column}>
+        <View style={styles.pokenumber}>
+          <Text
+            style={{ textAlign: "center", color: "#bab", fontWeight: "bold" }}
+          >
+            N° 001
+          </Text>
+        </View>
+      </View>
+      <Image style={styles.backgroundImage} source={Pokebola} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    display: 'flex',
-    flexDirection: 'row',
-    position: 'relative',
+    display: "flex",
+    flexDirection: "row",
+    position: "relative",
     gap: 5,
-    backgroundColor: 'white',
-    width: '90%',
-    marginHorizontal: 'auto',
+    backgroundColor: "white",
+    width: "90%",
+    marginHorizontal: "auto",
     marginVertical: 10,
     height: 180,
     borderRadius: 10,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -66,7 +77,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   backgroundImage: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 0,
     width: 100,
@@ -75,17 +86,17 @@ const styles = StyleSheet.create({
   },
   card_column: {
     flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
     paddingVertical: 15,
   },
   card_title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   pokenumber: {
-    display: 'flex',
-    justifyContent: 'flex-start',
-  }
+    display: "flex",
+    justifyContent: "flex-start",
+  },
 });
