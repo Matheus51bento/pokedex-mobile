@@ -1,10 +1,10 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import {
   Modal,
   View,
   Text,
   StyleSheet,
-  Alert,
   TouchableOpacity,
   TextInput,
   TouchableWithoutFeedback,
@@ -13,9 +13,33 @@ import {
 interface Props {
   isVisible: boolean;
   closeModal: () => void;
+  pokeId: number;
+
+  addAnnotation: (e: Annotation) => void;
 }
 
-export function CreateNote({ isVisible, closeModal }: Props) {
+export function CreateNote({
+  isVisible,
+  closeModal,
+  pokeId,
+
+  addAnnotation,
+}: Props) {
+  const [annotattionText, setAnnotationText] = useState("");
+  const [annotattionType, setAnnotattionType] = useState("");
+
+  async function handleSubmit() {
+    const data = {
+      pokeId: pokeId,
+      annotation: annotattionText,
+      type: annotattionType,
+      date: new Date(),
+    };
+
+    addAnnotation(data);
+    closeModal();
+  }
+
   return (
     <Modal
       animationType="slide"
@@ -28,10 +52,18 @@ export function CreateNote({ isVisible, closeModal }: Props) {
           <View style={styles.modalView}>
             <Text style={styles.modalText}>Criar Anotação</Text>
 
-            <TextInput placeholder="Anotação" style={styles.input} />
-            <TextInput placeholder="Tag" style={styles.input} />
+            <TextInput
+              placeholder="Anotação"
+              style={styles.input}
+              onChangeText={(e) => setAnnotationText(e)}
+            />
+            <TextInput
+              placeholder="Tag"
+              style={styles.input}
+              onChangeText={(e) => setAnnotattionType(e)}
+            />
 
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Cadastrar</Text>
             </TouchableOpacity>
           </View>

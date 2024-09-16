@@ -2,13 +2,23 @@ import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { CreateNote } from "./CreateNote";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { PokemonTypes } from "../utils/PokemonTypes";
 
 const Snorlax = require("../assets/snorlax.png");
 
-export function DetailsHeader() {
+interface Props {
+  pokemon: Pokemon;
+
+  addAnnotation: (e: Annotation) => void;
+}
+
+export function DetailsHeader({ pokemon, addAnnotation }: Props) {
   const router = useNavigation();
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const filteredStats = pokemon.stats.filter((item) =>
+    ["speed", "defense", "attack"].includes(item.stat.name)
+  );
 
   const handleGoBack = () => router.goBack();
   const handleCloseModal = () => setModalIsOpen(false);
@@ -17,7 +27,12 @@ export function DetailsHeader() {
   return (
     <>
       {/* Header */}
-      <CreateNote isVisible={modalIsOpen} closeModal={handleCloseModal} />
+      <CreateNote
+        addAnnotation={addAnnotation}
+        pokeId={pokemon.id}
+        isVisible={modalIsOpen}
+        closeModal={handleCloseModal}
+      />
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerButton} onPress={handleGoBack}>
           <AntDesign name="arrowleft" size={28} color="white" />
@@ -35,44 +50,59 @@ export function DetailsHeader() {
       </View>
 
       <View style={styles.mainPokemon}>
-        <Text style={styles.mainPokemonId}>Nº 001</Text>
-        <Image source={Snorlax} style={styles.mainPokemonImg} />
+        <Text style={styles.mainPokemonId}>Nº {pokemon.id}</Text>
+        <Image
+          source={{ uri: pokemon.sprites.other.showdown.front_default }}
+          style={styles.mainPokemonImg}
+        />
         <View style={styles.mainPokemonTextContainer}>
-          <Text style={styles.mainPokemonName}>Snorlax</Text>
+          <Text style={styles.mainPokemonName}>{pokemon.name}</Text>
           <Text style={styles.status}>
-            HP: <Text style={styles.statusCount}>167</Text>
+            HP:{" "}
+            <Text style={styles.statusCount}>
+              {pokemon.stats.find((item) => item.stat.name === "hp")?.base_stat}
+            </Text>
           </Text>
         </View>
 
         <View style={styles.mainPokemonTags}>
-          <View style={styles.mainPokemonTag}>
-            <Text style={styles.mainPokemonTagText}>Normal</Text>
-          </View>
+          {pokemon.types.map((stat) => (
+            <View
+              style={[
+                styles.mainPokemonTag,
+                { backgroundColor: PokemonTypes[stat.type.name] },
+              ]}
+            >
+              <Text style={styles.mainPokemonTagText}>{stat.type.name}</Text>
+            </View>
+          ))}
         </View>
       </View>
 
       <View style={styles.statusRow}>
         <View style={styles.statusContainer}>
           <Text style={styles.status}>
-            height: <Text style={styles.statusCount}>0.7m</Text>
+            height:{" "}
+            <Text style={styles.statusCount}>{pokemon.height / 10} m</Text>
           </Text>
           <Text style={styles.status}>
-            weight: <Text style={styles.statusCount}>6.9kg</Text>
+            weight:{" "}
+            <Text style={styles.statusCount}>{pokemon.weight / 10} kg</Text>
           </Text>
           <Text style={styles.status}>
-            abilities: <Text style={styles.statusCount}>Overgrow</Text>
+            abilities:{" "}
+            <Text style={styles.statusCount}>
+              {pokemon.abilities[0].ability.name}
+            </Text>
           </Text>
         </View>
         <View style={styles.statusContainer}>
-          <Text style={styles.status}>
-            Attack: <Text style={styles.statusCount}>52</Text>
-          </Text>
-          <Text style={styles.status}>
-            Defense: <Text style={styles.statusCount}>43</Text>
-          </Text>
-          <Text style={styles.status}>
-            speed: <Text style={styles.statusCount}>65</Text>
-          </Text>
+          {filteredStats.map((item) => (
+            <Text style={styles.status}>
+              {item.stat.name}:{" "}
+              <Text style={styles.statusCount}>{item.base_stat}</Text>
+            </Text>
+          ))}
         </View>
       </View>
 
@@ -131,6 +161,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     gap: 10,
+    marginTop: 16,
   },
 
   mainPokemonName: {
@@ -145,6 +176,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
+    gap: 12,
     flexWrap: "wrap",
   },
   mainPokemonTag: {
@@ -154,7 +186,7 @@ const styles = StyleSheet.create({
   },
   mainPokemonTagText: {
     color: "#FDFDFD",
-    fontSize: 12,
+    fontSize: 16,
     fontFamily: "Inter",
   },
 
@@ -177,17 +209,17 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     fontFamily: "JokeyOne-Regular",
     fontSize: 16,
-    lineHeight: 16,
+    lineHeight: 18,
     color: "#505050",
   },
 
   statusCount: {
     fontFamily: "Inter",
-    fontSize: 14,
+    fontSize: 16,
   },
 
   notesTitle: {
-    color: "#000",
+    color: "#fff",
     fontSize: 24,
     fontFamily: "JokeyOne-Regular",
     marginBottom: 10,

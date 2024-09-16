@@ -1,19 +1,18 @@
 import { View, Text, StyleSheet } from "react-native";
 
-export function Note() {
+interface Props {
+  annotation: Annotation;
+}
+export function Note({ annotation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.tag}>
-          <Text style={styles.tagText}>Important</Text>
+          <Text style={styles.tagText}>{annotation.type}</Text>
         </View>
         <Text style={styles.date}>12/09/2024</Text>
       </View>
-      <Text>
-        Lorem Ipsum has been the industry's standard dummy text ever since the
-        1500s, when an unknown printer took a galley of type and scrambled it to
-        make a type
-      </Text>
+      <Text>{annotation.annotation}</Text>
     </View>
   );
 }
