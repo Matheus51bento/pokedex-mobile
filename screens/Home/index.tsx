@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   TextInput,
   View,
-  Button,
 } from "react-native";
 import Card from "../../components/Card";
 import * as Font from "expo-font";
@@ -19,10 +18,10 @@ const Rayquaza = require("../../assets/rayquaza.png");
 
 export default function Home() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
-  const handleCardPress = (item: any) => {
-    navigation.navigate("Details", { item });
+  const handleCardPress = (id: number) => {
+    navigation.navigate("Details", { id });
   };
 
   const handleButtonPress = () => {
@@ -42,7 +41,7 @@ export default function Home() {
 
   const data = [
     {
-      id: "1",
+      id: 1,
       image: Snorlax,
       name: "Snorlax",
       hp: "105",
@@ -52,7 +51,7 @@ export default function Home() {
       type: "Normal",
     },
     {
-      id: "2",
+      id: 2,
       image: Rayquaza,
       name: "Rayquaza",
       hp: "200",
@@ -79,11 +78,10 @@ export default function Home() {
         style={styles.list}
         data={data}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleCardPress(item)}>
+          <TouchableOpacity onPress={() => handleCardPress(item.id)}>
             <Card card={item} />
           </TouchableOpacity>
         )}
-        keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
   );
