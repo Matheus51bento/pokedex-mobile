@@ -14,8 +14,12 @@ interface Props {
   isVisible: boolean;
   closeModal: () => void;
   pokeId: number;
-
   addAnnotation: (e: Annotation) => void;
+}
+
+interface Errors {
+  textError?: string;
+  typeError?: string;
 }
 
 export function CreateNote({
@@ -25,19 +29,39 @@ export function CreateNote({
 
   addAnnotation,
 }: Props) {
-  const [annotattionText, setAnnotationText] = useState("");
-  const [annotattionType, setAnnotattionType] = useState("");
+  const [text, setText] = useState("");
+  const [type, setType] = useState("");
+  const [errors, setErros] = useState<Errors | undefined>(undefined);
 
   async function handleSubmit() {
-    const data = {
-      pokeId: pokeId,
-      annotation: annotattionText,
-      type: annotattionType,
-      date: new Date(),
-    };
+    if (text && type) {
+      const dataAtual = new Date();
+      const dia = String(dataAtual.getDate()).padStart(2, "0");
+      const mes = String(dataAtual.getMonth() + 1).padStart(2, "0");
+      const ano = dataAtual.getFullYear();
 
-    addAnnotation(data);
-    closeModal();
+      const dataFormatada = `${dia}/${mes}/${ano}`;
+
+      const idAleatorio = `${dataFormatada}-${Math.random()
+        .toString(36)
+        .substr(2, 9)}`;
+      const data = {
+        id: idAleatorio,
+        pokeId: pokeId,
+        annotation: text,
+        type: type,
+        date: dataFormatada,
+      };
+      console.log(data);
+
+      addAnnotation(data);
+      closeModal();
+    } else {
+      let errors = {};
+      if (!text) errors = { textError: "Anotação é obrigatório." };
+      if (!type) errors = { ...errors, typeError: "Tipo é obrigatório." };
+      setErros(errors);
+    }
   }
 
   return (
@@ -54,14 +78,21 @@ export function CreateNote({
 
             <TextInput
               placeholder="Anotação"
-              style={styles.input}
-              onChangeText={(e) => setAnnotationText(e)}
+              style={[styles.input, errors?.textError ? styles.inputError : {}]}
+              onChangeText={(e) => setText(e)}
             />
+            {errors?.textError && (
+              <Text style={styles.errorText}>{errors?.textError}</Text>
+            )}
             <TextInput
               placeholder="Tag"
-              style={styles.input}
-              onChangeText={(e) => setAnnotattionType(e)}
+              style={[styles.input, errors?.typeError ? styles.inputError : {}]}
+              onChangeText={(e) => setType(e)}
             />
+
+            {errors?.typeError && (
+              <Text style={styles.errorText}>{errors?.typeError}</Text>
+            )}
 
             <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.buttonText}>Cadastrar</Text>
@@ -126,5 +157,14 @@ const styles = StyleSheet.create({
   modalText: {
     fontFamily: "JokeyOne-Regular",
     fontSize: 24,
+  },
+
+  inputError: {
+    borderColor: "red",
+  },
+
+  errorText: {
+    color: "red",
+    width: "100%",
   },
 });

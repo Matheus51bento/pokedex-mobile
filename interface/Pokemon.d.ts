@@ -56,9 +56,10 @@ interface Type {
 }
 
 interface Annotation {
+  id: string;
   pokeId: number;
   annotation: string;
-  date: Date;
+  date: string;
   type: string;
 }
 
