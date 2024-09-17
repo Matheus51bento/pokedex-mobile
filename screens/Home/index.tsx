@@ -13,9 +13,11 @@ import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { getListPokemon, getSearchByName } from "../../service/ApiService";
+import { Loading } from "../../components/Loadind";
 
 export default function Home() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const [pokemons, setPokemons] = useState<ShortPokemon[]>([]);
   const [search, setSearch] = useState("");
   const navigation = useNavigation<any>();
@@ -32,10 +34,10 @@ export default function Home() {
     await Font.loadAsync({
       "JokeyOne-Regular": require("../../assets/fonts/JockeyOne-Regular.ttf"),
     });
-    setFontsLoaded(true);
   };
 
   useEffect(() => {
+    setLoading(true);
     loadFonts();
     getData();
   }, []);
@@ -45,6 +47,8 @@ export default function Home() {
       const res = await getListPokemon();
       setPokemons(res);
     } catch (error) {}
+
+    setLoading(false);
   }
 
   async function handleSubmit() {
@@ -54,16 +58,27 @@ export default function Home() {
       console.log(data);
       setPokemons([data]);
     } catch (error) {
-      if (error.response.status == 404) console.log("não encontrado");
+      if (error.response.status == 404) setPokemons([]);
     }
   }
+
+  if (loading) return <Loading />;
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>SPokeDex</Text>
-        <TouchableOpacity onPress={handleButtonPress} style={styles.play_button}>
-            <Text style={{ color: "white", textAlign: "center" }}>Jogar</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={handleButtonPress} style={styles.play_button}>
+        <Text
+          style={{
+            color: "white",
+            textAlign: "center",
+            fontSize: 16,
+            fontWeight: "700",
+          }}
+        >
+          Jogar
+        </Text>
+      </TouchableOpacity>
       <View style={styles.search_container}>
         <TextInput
           style={styles.search}
@@ -74,15 +89,24 @@ export default function Home() {
           <MaterialIcons name="search" size={30} color="white" />
         </TouchableOpacity>
       </View>
-      <FlatList
-        style={styles.list}
-        data={pokemons}
-        renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => handleCardPress(item.id)}>
-            <Card pokemon={item} />
-          </TouchableOpacity>
-        )}
-      />
+
+      {pokemons.length == 0 ? (
+        <View style={styles.noPokemonFound}>
+          <Text style={styles.noPokemonFoundText}>
+            Nenhum pokemon encontrado
+          </Text>
+        </View>
+      ) : (
+        <FlatList
+          style={styles.list}
+          data={pokemons}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => handleCardPress(item.id)}>
+              <Card pokemon={item} />
+            </TouchableOpacity>
+          )}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -90,7 +114,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F6E6C7",
+    backgroundColor: "#161A1C",
     alignItems: "center",
     justifyContent: "center",
     padding: 0,
@@ -105,7 +129,7 @@ const styles = StyleSheet.create({
     fontFamily: "JokeyOne-Regular",
     fontSize: 48,
     fontWeight: "bold",
-    color: "black",
+    color: "#fff",
   },
   search_container: {
     display: "flex",
@@ -116,7 +140,7 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   play_button: {
-    backgroundColor: "#E38800",
+    backgroundColor: "#DD2925",
     padding: 10,
     borderRadius: 5,
     width: "90%",
@@ -135,8 +159,16 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     padding: 5,
-    backgroundColor: "#E38800",
+    backgroundColor: "#DD2925",
     color: "white",
     borderRadius: 5,
+  },
+  noPokemonFound: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noPokemonFoundText: {
+    fontSize: 24,
   },
 });

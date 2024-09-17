@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, FlatList, SafeAreaView, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  SafeAreaView,
+  Text,
+  Dimensions,
+} from "react-native";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { DetailsHeader } from "../../components/DetailsHeader";
 import { Note } from "../../components/Note";
 import { getPokemonById } from "../../service/ApiService";
 import { Loading } from "../../components/Loadind";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+const { width, height } = Dimensions.get("window");
 
 type RootStackParamList = {
   Details: { item: any };
@@ -54,8 +62,9 @@ export default function Detail() {
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, { backgroundColor: pokemon.color }]}>
+    <SafeAreaView style={styles.safeArea}>
       <FlatList
+        style={{ zIndex: 100, position: "relative" }}
         contentContainerStyle={styles.container}
         ListHeaderComponent={
           <DetailsHeader
@@ -69,17 +78,42 @@ export default function Detail() {
         renderItem={({ item }) => <Note annotation={item} />}
         keyExtractor={(item) => item.id}
       />
+
+      <View style={[styles.topShape, { borderColor: pokemon.color }]} />
+      <View style={[styles.bottomShape, { borderColor: pokemon.color }]} />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1 },
+  safeArea: { flex: 1, backgroundColor: "#161A1C" },
   separator: {
     height: 16,
   },
   container: {
     paddingVertical: 16,
     paddingHorizontal: 24,
+  },
+  topShape: {
+    position: "absolute",
+    zIndex: 0,
+    top: 0,
+    left: 0,
+    width: 0,
+    height: 0,
+    borderRightWidth: width * 0.7,
+    borderBottomWidth: height,
+    borderBottomColor: "transparent",
+  },
+  bottomShape: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: 0,
+    height: 0,
+    borderLeftWidth: width * 0.7,
+    borderTopWidth: height,
+    borderTopColor: "transparent",
+    zIndex: 0,
   },
 });

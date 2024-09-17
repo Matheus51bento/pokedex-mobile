@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignItems: "center",
     width: "100%",
-    backgroundColor: "#E38800",
+    backgroundColor: "#DD2925",
   },
 
   input: {

@@ -114,7 +114,7 @@ export function DetailsHeader({
             </Text>
           </Text>
         </View>
-        <View style={styles.statusContainer}>
+        <View style={[styles.statusContainer, { maxWidth: 132 }]}>
           {filteredStats.map((item) => (
             <Text style={styles.status}>
               {item.stat.name}:{" "}
@@ -135,6 +135,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 24,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   headerTitle: {
     fontFamily: "JokeyOne-Regular",
@@ -154,6 +162,14 @@ const styles = StyleSheet.create({
     gap: 4,
     borderRadius: 8,
     marginBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 
   mainPokemonId: {
@@ -220,6 +236,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     borderRadius: 6,
     flex: 1,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 
   status: {
