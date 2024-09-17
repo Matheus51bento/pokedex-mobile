@@ -10,7 +10,7 @@ export function Note({ annotation }: Props) {
         <View style={styles.tag}>
           <Text style={styles.tagText}>{annotation.type}</Text>
         </View>
-        <Text style={styles.date}>12/09/2024</Text>
+        <Text style={styles.date}>{annotation.date}</Text>
       </View>
       <Text>{annotation.annotation}</Text>
     </View>

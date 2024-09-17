@@ -5,17 +5,20 @@ import { CreateNote } from "./CreateNote";
 import { useEffect, useState } from "react";
 import { PokemonTypes } from "../utils/PokemonTypes";
 
-const Snorlax = require("../assets/snorlax.png");
-
 interface Props {
   pokemon: Pokemon;
-
+  haveAnnotations: boolean;
   addAnnotation: (e: Annotation) => void;
 }
 
-export function DetailsHeader({ pokemon, addAnnotation }: Props) {
+export function DetailsHeader({
+  pokemon,
+  addAnnotation,
+  haveAnnotations,
+}: Props) {
   const router = useNavigation();
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [backImg, setBackImg] = useState(false);
   const filteredStats = pokemon.stats.filter((item) =>
     ["speed", "defense", "attack"].includes(item.stat.name)
   );
@@ -23,6 +26,15 @@ export function DetailsHeader({ pokemon, addAnnotation }: Props) {
   const handleGoBack = () => router.goBack();
   const handleCloseModal = () => setModalIsOpen(false);
   const handleOpenModal = () => setModalIsOpen(true);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBackImg((prev) => !prev);
+    }, 8000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   return (
     <>
@@ -51,10 +63,16 @@ export function DetailsHeader({ pokemon, addAnnotation }: Props) {
 
       <View style={styles.mainPokemon}>
         <Text style={styles.mainPokemonId}>Nº {pokemon.id}</Text>
+
         <Image
-          source={{ uri: pokemon.sprites.other.showdown.front_default }}
+          source={{
+            uri: backImg
+              ? pokemon.sprites.other.showdown.back_default
+              : pokemon.sprites.other.showdown.front_default,
+          }}
           style={styles.mainPokemonImg}
         />
+
         <View style={styles.mainPokemonTextContainer}>
           <Text style={styles.mainPokemonName}>{pokemon.name}</Text>
           <Text style={styles.status}>
@@ -105,8 +123,7 @@ export function DetailsHeader({ pokemon, addAnnotation }: Props) {
           ))}
         </View>
       </View>
-
-      <Text style={styles.notesTitle}>Anotações:</Text>
+      {haveAnnotations && <Text style={styles.notesTitle}>Anotações:</Text>}
     </>
   );
 }

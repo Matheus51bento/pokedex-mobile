@@ -1,61 +1,65 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ImageSourcePropType,
-} from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import CardText from "../components/CardText";
 import TypeCard from "../components/TypeCard";
+import { PokemonTypes } from "../utils/PokemonTypes";
 
 const Pokebola = require("../assets/pokebola.png");
 
-interface Card {
-  name: string;
-  image: ImageSourcePropType;
-  hp: string;
-  attack: string;
-  defense: string;
-  speed: string;
-  type: string;
-}
-
 interface Props {
-  card: Card;
+  pokemon: ShortPokemon;
 }
 
-export default function Card({ card }: Props) {
+export default function Card({ pokemon }: Props) {
+  const filteredStats = pokemon.stats.filter((item) =>
+    ["attack", "hp", "defense", "speed"].includes(item.stat.name)
+  );
+
   return (
     <View style={styles.card}>
-      <View style={{ marginVertical: "auto" }}>
-        <Image
-          style={{ width: 160, height: 160, borderRadius: 50 }}
-          source={card.image}
-        />
-      </View>
+      <Image
+        style={{
+          width: 172,
+          height: 142,
+          resizeMode: "contain",
+          marginVertical: "auto",
+          marginLeft: 8,
+        }}
+        source={{ uri: pokemon.sprites.other.showdown.front_default }}
+      />
+
       <View style={styles.card_column}>
-        <Text style={styles.card_title}>{card.name}</Text>
-        <CardText title="HP" content={card.hp} />
-        <CardText title="ATTACK" content={card.attack} />
-        <CardText title="DEFENSE" content={card.defense} />
-        <CardText title="SPEED" content={card.speed} />
-        <TypeCard color="#f40" content={card.type} />
-      </View>
-      <View style={styles.card_column}>
-        <View style={styles.pokenumber}>
-          <Text
-            style={{ textAlign: "center", color: "#bab", fontWeight: "bold" }}
-          >
-            N° 001
-          </Text>
+        <Text style={styles.card_title}>{pokemon.name}</Text>
+        {filteredStats.map((item) => (
+          <CardText title={item.stat.name} content={item.base_stat} />
+        ))}
+        <View style={styles.row}>
+          {pokemon.types.map((type) => (
+            <TypeCard
+              color={PokemonTypes[type.type.name]}
+              content={type.type.name}
+            />
+          ))}
         </View>
       </View>
+
+      <View style={styles.pokenumber}>
+        <Text style={styles.pokeId}>N° {pokemon.id}</Text>
+      </View>
+
       <Image style={styles.backgroundImage} source={Pokebola} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  pokeId: {
+    textAlign: "center",
+    color: "#bab",
+    fontWeight: "bold",
+    position: "absolute",
+    top: 16,
+    right: 16,
+  },
   card: {
     display: "flex",
     flexDirection: "row",
@@ -84,7 +88,9 @@ const styles = StyleSheet.create({
     height: 100,
     opacity: 1,
   },
+  row: { flexDirection: "row", gap: 8, width: "100%" },
   card_column: {
+    zIndex: 100,
     flex: 1,
     display: "flex",
     flexDirection: "column",

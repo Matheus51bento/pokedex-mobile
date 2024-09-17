@@ -23,7 +23,7 @@ export default function Detail() {
   useEffect(() => {
     setLoading(true);
     getData();
-  }, []);
+  }, [id]);
 
   async function getData() {
     try {
@@ -31,9 +31,12 @@ export default function Detail() {
       const annotationsData = await AsyncStorage.getItem(
         "@SPOKEDEX:ANNOTATIONS"
       );
-
+      const annotationsJson: Annotation[] = annotationsData
+        ? JSON.parse(annotationsData)
+        : [];
       setPokemon(data);
-      setAnnotations(annotationsData ? JSON.parse(annotationsData) : []);
+
+      setAnnotations(annotationsJson.filter((item) => item.pokeId === data.id));
       setLoading(false);
     } catch (err) {
       console.log(err);
@@ -58,11 +61,13 @@ export default function Detail() {
           <DetailsHeader
             pokemon={pokemon}
             addAnnotation={handleAddAnnotation}
+            haveAnnotations={annotations.length > 0}
           />
         }
         data={annotations}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => <Note annotation={item} />}
+        keyExtractor={(item) => item.id}
       />
     </SafeAreaView>
   );
