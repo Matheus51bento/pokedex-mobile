@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/Home";
 import DetailsScreen from "./screens/Detail";
+import PlayScreen from "./screens/Play";
 import { SafeAreaView } from "react-native";
 
 const Stack = createNativeStackNavigator();
@@ -16,6 +17,7 @@ export default function App() {
       >
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Play" component={PlayScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

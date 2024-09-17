@@ -24,6 +24,10 @@ export default function Home() {
     navigation.navigate("Details", { id });
   };
 
+  const handleButtonPress = () => {
+    navigation.navigate("Play");
+  };
+
   const loadFonts = async () => {
     await Font.loadAsync({
       "JokeyOne-Regular": require("../../assets/fonts/JockeyOne-Regular.ttf"),
@@ -57,6 +61,9 @@ export default function Home() {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>SPokeDex</Text>
+        <TouchableOpacity onPress={handleButtonPress} style={styles.play_button}>
+            <Text style={{ color: "white", textAlign: "center" }}>Jogar</Text>
+        </TouchableOpacity>
       <View style={styles.search_container}>
         <TextInput
           style={styles.search}
@@ -106,6 +113,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginVertical: 10,
+    width: "90%",
+  },
+  play_button: {
+    backgroundColor: "#E38800",
+    padding: 10,
+    borderRadius: 5,
     width: "90%",
   },
   search: {
