@@ -17,7 +17,7 @@ export async function getPokemonById(id: number) {
 }
 
 export async function getListPokemon() {
-  const { data } = await httpClient.get("pokemon/?limit=100");
+  const { data } = await httpClient.get("pokemon/?limit=72");
   const results = data.results;
 
   const payloadPokemons = await Promise.all(
@@ -35,4 +35,8 @@ export async function getListPokemon() {
   );
 
   return payloadPokemons;
+}
+
+export async function getSearchByName(name: string) {
+  return await httpClient.get(`/pokemon/${name.toLocaleLowerCase()}`);
 }

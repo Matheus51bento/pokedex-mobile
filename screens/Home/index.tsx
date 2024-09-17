@@ -12,11 +12,12 @@ import * as Font from "expo-font";
 import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { getListPokemon } from "../../service/ApiService";
+import { getListPokemon, getSearchByName } from "../../service/ApiService";
 
 export default function Home() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [pokemons, setPokemons] = useState<ShortPokemon[]>([]);
+  const [search, setSearch] = useState("");
   const navigation = useNavigation<any>();
 
   const handleCardPress = (id: number) => {
@@ -42,12 +43,27 @@ export default function Home() {
     } catch (error) {}
   }
 
+  async function handleSubmit() {
+    try {
+      console.log(search);
+      const { data } = await getSearchByName(search);
+      console.log(data);
+      setPokemons([data]);
+    } catch (error) {
+      if (error.response.status == 404) console.log("não encontrado");
+    }
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>SPokeDex</Text>
       <View style={styles.search_container}>
-        <TextInput style={styles.search} placeholder="Pesquisar" />
-        <TouchableOpacity style={styles.search_button}>
+        <TextInput
+          style={styles.search}
+          placeholder="Pesquisar"
+          onChangeText={(e) => setSearch(e)}
+        />
+        <TouchableOpacity style={styles.search_button} onPress={handleSubmit}>
           <MaterialIcons name="search" size={30} color="white" />
         </TouchableOpacity>
       </View>
