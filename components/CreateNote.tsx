@@ -52,7 +52,6 @@ export function CreateNote({
         type: type,
         date: dataFormatada,
       };
-      console.log(data);
 
       addAnnotation(data);
       closeModal();

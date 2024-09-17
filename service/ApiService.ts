@@ -15,3 +15,24 @@ export async function getPokemonById(id: number) {
 
   return data;
 }
+
+export async function getListPokemon() {
+  const { data } = await httpClient.get("pokemon/?limit=100");
+  const results = data.results;
+
+  const payloadPokemons = await Promise.all(
+    results.map(async (pokemon: { name: string; url: string }) => {
+      const { data } = await axios.get(pokemon.url);
+
+      return {
+        id: data.id,
+        name: data.name,
+        stats: data.stats,
+        sprites: data.sprites,
+        types: data.types,
+      };
+    })
+  );
+
+  return payloadPokemons;
+}

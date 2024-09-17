@@ -12,12 +12,11 @@ import * as Font from "expo-font";
 import React, { useState, useEffect } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-
-const Snorlax = require("../../assets/snorlax.png");
-const Rayquaza = require("../../assets/rayquaza.png");
+import { getListPokemon } from "../../service/ApiService";
 
 export default function Home() {
   const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [pokemons, setPokemons] = useState<ShortPokemon[]>([]);
   const navigation = useNavigation<any>();
 
   const handleCardPress = (id: number) => {
@@ -33,30 +32,15 @@ export default function Home() {
 
   useEffect(() => {
     loadFonts();
+    getData();
   }, []);
 
-  const data = [
-    {
-      id: 1,
-      image: Snorlax,
-      name: "Snorlax",
-      hp: "105",
-      attack: "130",
-      defense: "200",
-      speed: "10",
-      type: "Normal",
-    },
-    {
-      id: 2,
-      image: Rayquaza,
-      name: "Rayquaza",
-      hp: "200",
-      attack: "+8000",
-      defense: "400",
-      speed: "200",
-      type: "Dragon",
-    },
-  ];
+  async function getData() {
+    try {
+      const res = await getListPokemon();
+      setPokemons(res);
+    } catch (error) {}
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,10 +53,10 @@ export default function Home() {
       </View>
       <FlatList
         style={styles.list}
-        data={data}
+        data={pokemons}
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => handleCardPress(item.id)}>
-            <Card card={item} />
+            <Card pokemon={item} />
           </TouchableOpacity>
         )}
       />
@@ -110,7 +94,7 @@ const styles = StyleSheet.create({
   },
   search: {
     flex: 1,
-    height: 40,
+    height: 42,
     backgroundColor: "white",
     borderColor: "#ccc",
     borderWidth: 1,
