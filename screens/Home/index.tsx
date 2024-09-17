@@ -53,11 +53,10 @@ export default function Home() {
 
   async function handleSubmit() {
     try {
-      console.log(search);
       const { data } = await getSearchByName(search);
-      console.log(data);
+
       setPokemons([data]);
-    } catch (error) {
+    } catch (error: any) {
       if (error.response.status == 404) setPokemons([]);
     }
   }
@@ -170,5 +169,6 @@ const styles = StyleSheet.create({
   },
   noPokemonFoundText: {
     fontSize: 24,
+    color: "#fff",
   },
 });

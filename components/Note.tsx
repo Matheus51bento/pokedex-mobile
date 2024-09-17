@@ -7,8 +7,15 @@ export function Note({ annotation }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.tag}>
-          <Text style={styles.tagText}>{annotation.type}</Text>
+        <View
+          style={[
+            styles.tag,
+            { backgroundColor: OptionsType[annotation.type].color },
+          ]}
+        >
+          <Text style={styles.tagText}>
+            {OptionsType[annotation.type].name}
+          </Text>
         </View>
         <Text style={styles.date}>{annotation.date}</Text>
       </View>
@@ -47,7 +54,6 @@ const styles = StyleSheet.create({
   },
 
   tag: {
-    backgroundColor: "#f00",
     borderRadius: 3,
     paddingHorizontal: 4,
     paddingVertical: 2,
@@ -59,3 +65,18 @@ const styles = StyleSheet.create({
     fontFamily: "Inter",
   },
 });
+
+const OptionsType = {
+  importante: {
+    name: "Importante",
+    color: "#F00",
+  },
+  media: {
+    name: "Média",
+    color: "FFB800",
+  },
+  baixa: {
+    name: "Baixa",
+    color: "#32BF00",
+  },
+};

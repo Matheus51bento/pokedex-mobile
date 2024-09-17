@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import {
   Modal,
@@ -9,6 +8,7 @@ import {
   TextInput,
   TouchableWithoutFeedback,
 } from "react-native";
+import { Picker } from "@react-native-picker/picker";
 
 interface Props {
   isVisible: boolean;
@@ -83,12 +83,21 @@ export function CreateNote({
             {errors?.textError && (
               <Text style={styles.errorText}>{errors?.textError}</Text>
             )}
-            <TextInput
-              placeholder="Tag"
-              style={[styles.input, errors?.typeError ? styles.inputError : {}]}
-              onChangeText={(e) => setType(e)}
-            />
 
+            <View style={styles.selected}>
+              <Picker
+                selectedValue={type}
+                style={{ marginTop: -68 }}
+                onValueChange={(itemValue) => setType(itemValue)}
+                itemStyle={{
+                  fontSize: 16,
+                }}
+              >
+                <Picker.Item label="Importante" value="importante" />
+                <Picker.Item label="Média" value="media" />
+                <Picker.Item label="Baixa" value="baixa" />
+              </Picker>
+            </View>
             {errors?.typeError && (
               <Text style={styles.errorText}>{errors?.typeError}</Text>
             )}
@@ -144,6 +153,15 @@ const styles = StyleSheet.create({
     width: "100%",
     borderWidth: 1,
     borderColor: "#C2C2C2",
+  },
+
+  selected: {
+    borderWidth: 1,
+    borderColor: "#C2C2C2",
+    borderRadius: 4,
+    width: "100%",
+    height: 80,
+    overflow: "hidden",
   },
 
   buttonText: {
