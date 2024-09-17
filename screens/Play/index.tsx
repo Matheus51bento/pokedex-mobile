@@ -1,27 +1,67 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity, Text, Image, View, SafeAreaView, TextInput } from "react-native";
-import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, TouchableOpacity, Alert, Text, Image, View, SafeAreaView, TextInput } from "react-native";
+import { AntDesign } from "@expo/vector-icons";
+import { getPokemonById } from "../../service/ApiService";
 import { useNavigation } from "@react-navigation/native";
-const Snorlax = require("../../assets/rayquaza.png");
-
-
+import { Loading } from "../../components/Loadind";
 
 export default function Detail() {
+    const [loading, setLoading] = useState(true);
+    const [pokemon, setPokemon] = useState<Pokemon | null>(null);
+    const [inputText, setInputText] = useState("");
+    const [showSilhouette, setShowSilhouette] = useState(true);
 
     const router = useNavigation();
-    const randomNumber = Math.floor(Math.random() * 1302) + 1;
     const handleGoBack = () => router.goBack();
 
-    const SilhouetteImage = () => {
+    const handleSubmit = () => {
+        if (pokemon?.name.toLowerCase() === inputText.toLowerCase()) {
+            Alert.alert("Você acertou!", `Parabéns, você adivinhou o Pokémon corretamente!`);
+        } else {
+            Alert.alert("Você errou!", `O Pokémon correto era ${pokemon?.name}.`);
+        }
+        setInputText("");
+        setShowSilhouette(false);
+    };
+
+    const SilhouetteImage = ({ imageUrl }: { imageUrl: string | null }) => {
         return (
             <View style={styles.container}>
-                <Image
-                    source={Snorlax}
-                    style={styles.image}
-                />
+                {imageUrl ? (
+                    <Image
+                        source={{ uri: imageUrl }}
+                        style={[
+                            styles.image,
+                            showSilhouette ? { tintColor: 'black' } : { tintColor: null }
+                        ]}
+                    />
+                ) : null}
             </View>
         );
     };
+
+    useEffect(() => {
+        setLoading(true);
+        getData();
+    }, []);
+
+    async function getData() {
+        try {
+            const randomNumber = Math.floor(Math.random() * 1010) + 1;
+
+            const data = await getPokemonById(randomNumber);
+            setPokemon(data);
+
+            setLoading(false);
+            setShowSilhouette(true);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    if (loading) {
+        return <Loading />;
+    }
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -29,23 +69,25 @@ export default function Detail() {
                 <TouchableOpacity style={styles.headerButton} onPress={handleGoBack}>
                     <AntDesign name="arrowleft" size={28} color="white" />
                 </TouchableOpacity>
-
                 <Text style={styles.headerTitle}>SPokeDex</Text>
-
                 <Text></Text>
             </View>
             <Text style={styles.game}>Quem é esse Pokemon?</Text>
             <View style={styles.pokemon} >
-                <SilhouetteImage />
+                <SilhouetteImage imageUrl={pokemon?.sprites?.front_default ?? null} />
                 <View>
                     <TextInput
                         style={styles.resposta}
                         placeholder="Sua Resposta"
                         placeholderTextColor="#fdf"
-                        onChangeText={text => console.log(text)}
+                        value={inputText}
+                        onChangeText={text => setInputText(text)}
                     />
-                    <TouchableOpacity onPress={() => alert('Você acertou!')} style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                    <TouchableOpacity onPress={() => handleSubmit()} style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
                         <Text style={{ color: '#6195A9', textAlign: 'center' }}>Enviar</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => getData()} style={{ backgroundColor: '#fff', padding: 10, marginTop: 10 }}>
+                        <Text style={{ color: '#6195A9', textAlign: 'center' }}>Próximo</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -55,9 +97,6 @@ export default function Detail() {
 
 const styles = StyleSheet.create({
     safeArea: { flex: 1, backgroundColor: "#6195A9" },
-    separator: {
-        height: 16,
-    },
     resposta: {
         backgroundColor: '#0090A9',
         color: '#fff',
@@ -95,8 +134,8 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     image: {
-        width: 200,
-        height: 200,
+        width: 300,
+        height: 300,
         tintColor: 'black',
         resizeMode: 'contain',
     },
